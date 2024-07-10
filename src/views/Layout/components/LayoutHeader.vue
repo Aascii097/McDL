@@ -1,4 +1,15 @@
-<script setup></script>
+<script setup>
+import { useUserStore } from '@/stores/user'
+import { clearcartAPI } from '@/apis/cart'
+import { useRouter } from 'vue-router'
+const userStore = useUserStore()
+const router = useRouter()
+const logout = async () => {
+  userStore.setToken(null)
+  await clearcartAPI()
+  router.push('/login')
+}
+</script>
 <template>
   <el-affix :offset="0">
     <header class="app-header">
@@ -18,6 +29,8 @@
           <RouterLink to="/order">order</RouterLink>
           <div @click="$router.push('/order')" class="character">订单</div>
         </h1>
+        <el-button v-if="userStore.token" @click="logout">退出登录</el-button>
+        <el-button v-else @click="$router.push('/login')">登录</el-button>
       </div>
     </header>
   </el-affix>

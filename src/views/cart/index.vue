@@ -1,5 +1,5 @@
 <script setup>
-import { getcartAPI, deletecartAPI, updatecartAPI } from '@/apis/cart'
+import { getcartAPI, deletecartAPI, updatecartAPI, clearcartAPI } from '@/apis/cart'
 import { onMounted, ref, computed } from 'vue'
 import { debounce } from 'lodash'
 const cartList = ref([])
@@ -17,7 +17,10 @@ const handleChange = debounce(async (id, num) => {
 }, 300)
 const allCount = computed(() => cartList.value.reduce((a, c) => a + c.num, 0))
 const allPrice = computed(() => cartList.value.reduce((a, c) => a + c.num * c.price, 0))
-
+const clear = async () => {
+  await clearcartAPI()
+  getcart()
+}
 onMounted(() => getcart())
 </script>
 
@@ -89,6 +92,9 @@ onMounted(() => getcart())
         <div class="batch">
           共 {{ allCount }}件商品,商品合计：
           <span class="red">¥ {{ allPrice.toFixed(2) }}</span>
+        </div>
+        <div class="total">
+          <el-button size="large" @click="clear" type="primary">清空购物车</el-button>
         </div>
         <div class="total">
           <el-button size="large" type="primary">下单结算</el-button>
