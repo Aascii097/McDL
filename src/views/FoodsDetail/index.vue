@@ -5,6 +5,7 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
+import { clearcartAPI } from '@/apis/cart'
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.token)
 
@@ -31,6 +32,8 @@ const addcart = async () => {
     })
     if (res.status === 1) {
       userStore.setToken(null)
+      const res = await clearcartAPI()
+      console.log(res)
       ElMessage({
         type: 'warning',
         message: res?.message
@@ -43,6 +46,8 @@ const addcart = async () => {
       message: '请先登录'
     })
     userStore.setToken(null)
+    const res = await clearcartAPI()
+    console.log(res)
     router.push('/login')
   }
 }

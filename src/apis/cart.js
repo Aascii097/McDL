@@ -56,3 +56,9 @@ export function updatecartAPI({ id, num }) {
     data: { id, num }
   })
 }
+export function clearcartAPI() {
+  return http({
+    url: '/mcdl/clearcart',
+    method: 'POST'
+  })
+}
