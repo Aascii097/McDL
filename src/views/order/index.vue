@@ -1,60 +1,34 @@
 <script setup>
-const tableData = [
-  {
-    foods: '汉堡王可乐鸡翅11111111111111111111111111',
-    status: '制作中',
-    methods: '外带',
-    price: '￥19.9'
-  },
-  {
-    foods: '2016-05-02',
-    status: '制作中',
-    methods: '堂食',
-    price: '￥9.9'
-  },
-  {
-    foods: '2016-05-04',
-    status: '请取餐',
-    methods: '外带',
-    price: '￥9.9'
-  },
-  {
-    foods: '2016-05-01',
-    status: '请取餐',
-    methods: '堂食',
-    price: '￥9.9'
-  }
-]
+import { ref, onMounted } from 'vue'
+import { getorderAPI } from '@/apis/order'
+const orderList = ref([])
+const getorder = async () => {
+  const res = await getorderAPI()
+  orderList.value = res.data
+  // console.log(res)
+  // const newArray = orderList.value.map((obj) => {
+  //   const newname = obj.name.replace(/\//g, '\n')
+  //   return { newArray: newname }
+  // })
+  // console.log(newArray)
+}
+onMounted(() => getorder())
 </script>
 <template>
   <div class="order">
     <span class="msg">订单列表</span>
-    <el-table :data="tableData" border style="width: 100%" height="800">
+    <el-table :data="orderList" border style="width: 100%" height="800">
       <el-table-column label="套餐" show-overflow-tooltip>
         <template #default="scope">
           <div class="table">
-            <span class="status">{{ scope.row.foods }}</span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" width="180">
-        <template #default="scope">
-          <div class="table">
-            <span class="status">{{ scope.row.status }}</span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="就餐方式" width="180">
-        <template #default="scope">
-          <div class="table">
-            <span class="status">{{ scope.row.methods }}</span>
+            <span class="list">{{ scope.row.name }}</span>
           </div>
         </template>
       </el-table-column>
       <el-table-column label="价格" width="180">
         <template #default="scope">
           <div class="table">
-            <span class="price">{{ scope.row.price }}</span>
+            <span class="price">￥{{ scope.row.price }}</span>
           </div>
         </template>
       </el-table-column>
@@ -85,7 +59,7 @@ const tableData = [
       font-family: fantasy;
     }
 
-    .status {
+    .list {
       font-family: serif;
       font-size: 18px;
     }

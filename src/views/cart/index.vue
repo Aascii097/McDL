@@ -1,5 +1,6 @@
 <script setup>
 import { getcartAPI, deletecartAPI, updatecartAPI, clearcartAPI } from '@/apis/cart'
+import { addorderAPI } from '@/apis/order'
 import { onMounted, ref, computed } from 'vue'
 import { debounce } from 'lodash'
 const cartList = ref([])
@@ -20,6 +21,16 @@ const allPrice = computed(() => cartList.value.reduce((a, c) => a + c.num * c.pr
 const clear = async () => {
   await clearcartAPI()
   getcart()
+}
+const addOrder = async () => {
+  const idx = new Date().getTime()
+  const namestring = cartList.value.map((item) => `${item.name}*${item.num}`).join('/')
+  const pricex = allPrice.value
+  const res = await addorderAPI({ id: idx, name: namestring, price: pricex })
+  console.log(res)
+  if (res.status === 0) {
+    clear()
+  }
 }
 onMounted(() => getcart())
 </script>
@@ -94,10 +105,14 @@ onMounted(() => getcart())
           <span class="red">¥ {{ allPrice.toFixed(2) }}</span>
         </div>
         <div class="total">
-          <el-button size="large" @click="clear" type="primary">清空购物车</el-button>
+          <el-button size="large" :disabled="!cartList.length" @click="clear" type="primary"
+            >清空购物车</el-button
+          >
         </div>
         <div class="total">
-          <el-button size="large" type="primary">下单结算</el-button>
+          <el-button size="large" :disabled="!cartList.length" type="primary" @click="addOrder"
+            >下单结算</el-button
+          >
         </div>
       </div>
     </div>
